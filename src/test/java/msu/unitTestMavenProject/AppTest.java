@@ -35,4 +35,11 @@ public class AppTest
     {
         assertTrue( true );
     }
+    public void testAddition() {
+        assertEquals(5, 2 + 3);
+    }
+
+    public void testSubtraction() {
+        assertEquals(2, 5 - 3);
+    }
 }
