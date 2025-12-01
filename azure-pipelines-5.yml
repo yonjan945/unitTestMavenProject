@@ -1,0 +1,46 @@
+trigger:
+- master  # or your main branch
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  MAVEN_OPTS: "-Xmx1024m"
+
+steps:
+
+# 1. Set up Maven settings.xml with Azure Artifacts PAT
+- script: |
+    mkdir -p ~/.m2
+    cat <<EOF > ~/.m2/settings.xml
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                  https://maven.apache.org/xsd/settings-1.0.0.xsd">
+      <servers>
+        <server>
+          <id>kyonjan-release</id>
+          <username>anything</username>
+          <password>${AZURE_ARTIFACTS_PAT}</password>
+        </server>
+        <server>
+          <id>kyonjan-snapshot</id>
+          <username>anything</username>
+          <password>${AZURE_ARTIFACTS_PAT}</password>
+        </server>
+      </servers>
+    </settings>
+    EOF
+  displayName: 'Generate Maven settings.xml'
+  env:
+    AZURE_ARTIFACTS_PAT: $(AZURE_ARTIFACTS_PAT)  # Secret pipeline variable
+
+# 2. Run Maven deploy
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean deploy'
+    options: '-B'
+    mavenOptions: '$(MAVEN_OPTS)'
+  env:
+    AZURE_ARTIFACTS_PAT: $(AZURE_ARTIFACTS_PAT)  # Pass PAT to Maven
