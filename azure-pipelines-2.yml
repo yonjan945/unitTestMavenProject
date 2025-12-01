@@ -1,0 +1,41 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+pool:
+  name: Default   # your Mac agent pool name
+
+variables:
+  MAVEN_FEED: 'kyonjan'
+
+steps:
+
+# Authenticate with Maven feed
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: '$(MAVEN_FEED)'
+
+# Maven package step (skip tests)
+- task: Maven@3
+  displayName: "Maven Package (skip tests)"
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '11'
+    jdkArchitectureOption: 'x64'
+    goals: 'package -DskipTests'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+# Maven deploy step
+- task: Maven@3
+  displayName: "Maven Deploy to Azure Artifacts"
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+    options: '-s .azdo/settings.xml'
