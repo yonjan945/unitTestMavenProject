@@ -1,0 +1,33 @@
+trigger:
+- master
+
+pool:
+  name: Default   # your local agent pool
+  demands:
+  - agent.os -equals Darwin  # ensures macOS agent
+
+steps:
+- checkout: self
+
+# (Optional) Skip tests if you are using Week 7 project
+# Otherwise leave the "mvn test" step active.
+
+- script: |
+    echo "Running Maven test..."
+    mvn test
+  displayName: "Run Maven Tests"
+
+- script: |
+    echo "Packaging project..."
+    mvn package
+  displayName: "Maven Package"
+
+# If deploying to Azure Artifacts (Step 3)
+- task: Maven@4
+  displayName: "Deploy to Azure Artifacts"
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+    options: '-DskipTests'
+    publishJUnitResults: false
+    mavenAuthenticateFeed: true
