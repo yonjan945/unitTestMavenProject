@@ -22,11 +22,7 @@ steps:
     mvn package
   displayName: "Maven Package"
 
-# 4. Verify settings.xml exists in the root of the repo
-- script: |
-    echo "Verifying settings.xml exists..."
-    ls -l $(Build.SourcesDirectory)/settings.xml
-  displayName: "Verify settings.xml"
+
 
 # 5. Deploy to Azure Artifacts using manual settings.xml
 - task: Maven@4
