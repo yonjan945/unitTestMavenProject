@@ -22,5 +22,14 @@ steps:
     mvn package
   displayName: "Maven Package"
 
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: 'MyMavenfeed'
+
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+    options: '-s $(MAVEN_SETTINGS_XML)'
 
 
