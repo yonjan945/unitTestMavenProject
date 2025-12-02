@@ -23,9 +23,3 @@ steps:
     goals: 'test'
   displayName: 'Run Maven Tests'
 
-# Deploy artifacts
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'deploy'
-  displayName: 'Package and Deploy to Azure Artifacts'
