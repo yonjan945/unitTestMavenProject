@@ -7,29 +7,26 @@ pool:
   - agent.os -equals Darwin
 
 steps:
-# 1. Checkout repo
+# 1. Checkout repository
 - checkout: self
 
-# 2. Optional: run Maven tests
-- script: |
-    echo "Running Maven tests..."
-    mvn test
-  displayName: "Run Maven Tests"
-
-# 3. Package the project
-- script: |
-    echo "Packaging project..."
-    mvn package
-  displayName: "Maven Package"
-
+# 2. Authenticate with Azure Artifacts feed
 - task: MavenAuthenticate@0
   inputs:
     artifactsFeeds: 'MyMavenfeed'
+  displayName: 'Authenticate with Azure Artifacts'
 
+# 3. Run Maven tests (optional)
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'test'
+  displayName: 'Run Maven Tests'
+
+# 4. Package and deploy to Azure Artifacts
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'deploy'
     options: '-s $(MAVEN_SETTINGS_XML)'
-
-
+  displayName: 'Package and Deploy to Azure Artifacts'
