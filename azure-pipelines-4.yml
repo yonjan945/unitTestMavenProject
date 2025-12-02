@@ -15,6 +15,12 @@ steps:
   inputs:
     artifactsFeeds: 'MyMavenfeed'
 
+- script: |
+    echo "MAVEN_SETTINGS_XML=$(MAVEN_SETTINGS_XML)"
+    ls -l $(MAVEN_SETTINGS_XML)
+  displayName: "Check settings.xml path"
+
+
 # 2. Run tests (optional)
 - script: |
     echo "Running Maven tests..."
