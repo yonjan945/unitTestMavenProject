@@ -9,7 +9,7 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  default
 
 steps:
 # Step 1: Build and run tests with Maven
