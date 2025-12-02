@@ -21,13 +21,6 @@ steps:
     mvn package
   displayName: "Maven Package"
 
-# 3. Copy settings.xml to repo root (if stored in a subfolder, e.g., secure/)
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/secure'   # update if your settings.xml is elsewhere
-    Contents: 'settings.xml'
-    TargetFolder: '$(Build.SourcesDirectory)'
-  displayName: 'Copy settings.xml to root'
 
 # 4. Verify settings.xml exists
 - script: |
