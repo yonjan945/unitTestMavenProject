@@ -7,22 +7,22 @@ pool:
   - agent.os -equals Darwin
 
 steps:
+# 1. Checkout repo
 - checkout: self
 
-# 1. Optional: run tests
+# 2. Optional: run Maven tests
 - script: |
     echo "Running Maven tests..."
     mvn test
   displayName: "Run Maven Tests"
 
-# 2. Package project
+# 3. Package the project
 - script: |
     echo "Packaging project..."
     mvn package
   displayName: "Maven Package"
 
-
-# 4. Verify settings.xml exists
+# 4. Verify settings.xml exists in the root of the repo
 - script: |
     echo "Verifying settings.xml exists..."
     ls -l $(Build.SourcesDirectory)/settings.xml
