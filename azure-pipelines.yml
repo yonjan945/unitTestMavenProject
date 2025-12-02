@@ -7,16 +7,18 @@ trigger:
 - master
 
 pool:
-  default
+  name: default   # your self-hosted agent pool
 
 steps:
-- task: Maven@3
+# 1. Authenticate to Azure Artifacts feed
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: 'MyMavenFeed'
+
+# 2. Build and deploy with Maven
+- task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+    goals: 'deploy'
+    options: '-s $(MAVEN_SETTINGS_XML)'
+    publishJUnitResults: false
