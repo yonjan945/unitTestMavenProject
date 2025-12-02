@@ -10,16 +10,22 @@ steps:
 # 1. Checkout repository
 - checkout: self
 
-# 2. Authenticate with Azure Artifacts feed
+# 2. Authenticate with Azure Artifacts
 - task: MavenAuthenticate@0
   inputs:
     artifactsFeeds: 'MyMavenfeed'
   displayName: 'Authenticate with Azure Artifacts'
 
-# 3. Run Maven tests (optional)
+# 3. Run tests with extended debug logging
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'test'
-  displayName: 'Run Maven Tests'
+    options: '-X'
+  displayName: 'Run Maven Tests (Debug Mode)'
 
+# 4. Add delay to make test step longer
+- script: |
+    echo "Extending test stage duration..."
+    sleep 30
+  displayName: 'Artificial Delay'
