@@ -16,9 +16,14 @@ steps:
     artifactsFeeds: 'MyMavenfeed'
 
 - script: |
-    echo "MAVEN_SETTINGS_XML=$(MAVEN_SETTINGS_XML)"
-    ls -l $(MAVEN_SETTINGS_XML)
-  displayName: "Check settings.xml path"
+    echo "MAVEN_SETTINGS_XML=$MAVEN_SETTINGS_XML"
+    if [ -f "$MAVEN_SETTINGS_XML" ]; then
+      echo "Settings.xml exists at $MAVEN_SETTINGS_XML"
+    else
+      echo "Settings.xml NOT FOUND"
+    fi
+  displayName: "Verify MAVEN_SETTINGS_XML"
+
 
 
 # 2. Run tests (optional)
