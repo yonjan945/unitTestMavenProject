@@ -1,0 +1,21 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+pool:
+  name: default   # self-hosted pool
+
+steps:
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: 'MyMavenFeed'
+
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+    options: '-s $(MAVEN_SETTINGS_XML)'
