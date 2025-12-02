@@ -9,19 +9,33 @@ pool:
 steps:
 - checkout: self
 
-# Optional tests
+# 1. Optional: run tests
 - script: |
     echo "Running Maven tests..."
     mvn test
   displayName: "Run Maven Tests"
 
-# Package
+# 2. Package project
 - script: |
     echo "Packaging project..."
     mvn package
   displayName: "Maven Package"
 
-# Deploy using manual settings.xml
+# 3. Copy settings.xml to repo root (if stored in a subfolder, e.g., secure/)
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/secure'   # update if your settings.xml is elsewhere
+    Contents: 'settings.xml'
+    TargetFolder: '$(Build.SourcesDirectory)'
+  displayName: 'Copy settings.xml to root'
+
+# 4. Verify settings.xml exists
+- script: |
+    echo "Verifying settings.xml exists..."
+    ls -l $(Build.SourcesDirectory)/settings.xml
+  displayName: "Verify settings.xml"
+
+# 5. Deploy to Azure Artifacts using manual settings.xml
 - task: Maven@4
   displayName: "Deploy to Azure Artifacts using manual settings.xml"
   inputs:
@@ -29,4 +43,3 @@ steps:
     goals: 'deploy'
     options: '-s $(Build.SourcesDirectory)/settings.xml -DskipTests'
     publishJUnitResults: false
-
