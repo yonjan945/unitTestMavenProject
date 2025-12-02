@@ -15,7 +15,7 @@ steps:
   inputs:
     artifactsFeeds: 'MyMavenfeed'
 
-# 2. Optional: Run tests
+# 2. Run tests (optional)
 - script: |
     echo "Running Maven tests..."
     mvn test
@@ -27,7 +27,7 @@ steps:
     mvn package
   displayName: "Maven Package"
 
-# 4. Deploy to Azure Artifacts using generated settings.xml
+# 4. Deploy to Azure Artifacts
 - task: Maven@4
   displayName: "Deploy to Azure Artifacts"
   inputs:
@@ -35,4 +35,3 @@ steps:
     goals: 'deploy'
     options: '-s $(MAVEN_SETTINGS_XML) -DskipTests'
     publishJUnitResults: false
-
