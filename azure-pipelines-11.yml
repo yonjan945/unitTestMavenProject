@@ -1,0 +1,24 @@
+trigger:
+- master
+
+pool:
+  name: Default
+  demands:
+  - agent.os -equals Darwin
+
+steps:
+# 1. Checkout repository
+- checkout: self
+
+# 2. Authenticate with Azure Artifacts feed
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: 'MyMavenfeed'
+  displayName: 'Authenticate with Azure Artifacts'
+
+# 3. Run tests, build/package, and deploy
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+  displayName: 'Build, Test, and Deploy to Azure Artifacts'
