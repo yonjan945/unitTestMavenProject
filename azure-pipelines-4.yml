@@ -40,9 +40,10 @@ steps:
 
 # 4. Deploy to Azure Artifacts
 - task: Maven@4
-  displayName: "Deploy to Azure Artifacts"
+  displayName: "Deploy to Azure Artifacts using manual settings.xml"
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'deploy'
-    options: '-s $(MAVEN_SETTINGS_XML) -DskipTests'
+    options: '-s $(Build.SourcesDirectory)/settings.xml -DskipTests'
     publishJUnitResults: false
+
