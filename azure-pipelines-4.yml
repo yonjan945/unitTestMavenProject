@@ -9,7 +9,7 @@ pool:
 steps:
 - task: MavenAuthenticate@0
   inputs:
-    artifactsFeeds: 'kyonjan1'
+    artifactsFeeds: 'MyMavenfeed'
 
 - script: |
     echo "Settings = $(MAVEN_SETTINGS_XML)"
