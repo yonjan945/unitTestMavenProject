@@ -3,19 +3,33 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
+# Maven build and deploy pipeline
+
 trigger:
 - master
 
 pool:
-  name: default   # self-hosted pool
+  vmImage: ubuntu-latest
 
 steps:
-- task: MavenAuthenticate@0
-  inputs:
-    artifactsFeeds: 'MyMavenFeed'
-
-- task: Maven@4
+# Step 1: Build and run tests with Maven
+- task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'deploy'
-    options: '-s $(MAVEN_SETTINGS_XML)'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+
+# Step 2: Publish the JAR as a build artifact
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+
+
