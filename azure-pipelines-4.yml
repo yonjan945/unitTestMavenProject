@@ -1,5 +1,5 @@
 trigger:
-- master
+- none
 
 pool:
   name: Default
@@ -7,31 +7,10 @@ pool:
   - agent.os -equals Darwin
 
 steps:
-- checkout: self
-
-# 1. Authenticate to Azure Artifacts
 - task: MavenAuthenticate@0
-  displayName: "Authenticate to Azure Artifacts feed"
   inputs:
-    artifactsFeeds: 'kyonjan1'   # your correct feed name
+    artifactsFeeds: 'kyonjan1'
 
-# 2. Optional tests
 - script: |
-    echo "Running Maven tests..."
-    mvn test
-  displayName: "Run Maven Tests"
-
-# 3. Package
-- script: |
-    echo "Packaging project..."
-    mvn package
-  displayName: "Maven Package"
-
-# 4. Deploy
-- task: Maven@4
-  displayName: "Deploy to Azure Artifacts"
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'deploy'
-    options: '-s $(MAVEN_SETTINGS_XML) -DskipTests'
-    publishJUnitResults: false
+    echo "Settings = $(MAVEN_SETTINGS_XML)"
+  displayName: "Check variable"
