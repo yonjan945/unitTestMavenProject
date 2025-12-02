@@ -1,0 +1,44 @@
+# Maven build and deploy pipeline
+
+trigger:
+- master
+
+pool:
+  default
+
+steps:
+# Step 1: Build and run tests with Maven
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+
+# Step 2: Publish the JAR as a build artifact
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# Step 3: Deploy the artifact (example: copy to a remote server)
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'MySSHConnection'   # Define this service connection in Azure DevOps
+    sourceFolder: '$(System.DefaultWorkingDirectory)/target'
+    contents: '**/*.jar'
+    targetFolder: '/opt/myapp/'
+
+# Optional Step 4: Run a remote command to restart the service
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'MySSHConnection'
+    runOptions: 'commands'
+    commands: |
+      systemctl restart myapp.service
+
