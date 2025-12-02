@@ -9,36 +9,19 @@ pool:
 steps:
 - checkout: self
 
-# 1. Authenticate to Azure Artifacts (organization-scoped feed)
-- task: MavenAuthenticate@0
-  displayName: "Authenticate to Azure Artifacts feed"
-  inputs:
-    artifactsFeeds: 'MyMavenfeed'
-
-- script: |
-    echo "MAVEN_SETTINGS_XML=$MAVEN_SETTINGS_XML"
-    if [ -f "$MAVEN_SETTINGS_XML" ]; then
-      echo "Settings.xml exists at $MAVEN_SETTINGS_XML"
-    else
-      echo "Settings.xml NOT FOUND"
-    fi
-  displayName: "Verify MAVEN_SETTINGS_XML"
-
-
-
-# 2. Run tests (optional)
+# Optional tests
 - script: |
     echo "Running Maven tests..."
     mvn test
   displayName: "Run Maven Tests"
 
-# 3. Package project
+# Package
 - script: |
     echo "Packaging project..."
     mvn package
   displayName: "Maven Package"
 
-# 4. Deploy to Azure Artifacts
+# Deploy using manual settings.xml
 - task: Maven@4
   displayName: "Deploy to Azure Artifacts using manual settings.xml"
   inputs:
